@@ -30,7 +30,7 @@
 
 **Dataset Title:** Real Estate Prices in Tashkent, Uzbekistan
 
-**Source Website / URL:** Kaggle - Real Estate Prices in Tashkent (Scraped from Uybor.uz)
+**Source Website:** Kaggle - Real Estate Prices in Tashkent (Scraped from Uybor.uz)
 
 **Description of the Dataset:**
 
@@ -42,7 +42,7 @@ The dataset contains real estate listings in Tashkent, Uzbekistan scraped from t
 * Real estate valuation provides an intuitive, high-impact domain where linear relationships between physical variables (e.g., size, room count) and market price can be cleanly modeled and interpreted.
 * The mix of numerical metrics and categorical variables (districts) allows practical application of feature engineering and multiple linear regression.
 
-**Size of Dataset:** ~7,500+ rows, 8 columns
+**Size of Dataset:** 7,421 rows, 9 columns
 
 ---
 
