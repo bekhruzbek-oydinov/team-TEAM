@@ -17,7 +17,7 @@
 * **Leader:** Oydinov Bexruz | Student ID: 202390243 | Group: E40B | Role: Team Leader & Data Scientist | Phone: +998-94-794-01-94
 * **Member 1 (Co-Leader):** Murtazoyev Xondamir | Student ID: 202390241 | Group: E40B | Role: Data Analyst (Cleaning & Visualizing Data)
 * **Member 2:** Abdumurodov Mashrab | Student ID: 202390257 | Group: E40B | Role: AI Prompt Engineer (Documentation & Model Evaluation)
-* **Member 3:** Sayfulloyev Muhammad | Student ID: 202390257 | Group: E40B | Role: Researcher (Finding Dataset For The Project)
+* **Member 3:** Sayfulloyev Muhammad | Student ID: 202390201 | Group: E40B | Role: Researcher (Finding Dataset For The Project)
 ---
 
 ## 3. Project Title
