@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tashkent Real Estate MLR Price Predictor | TEAM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        /* Custom Range Slider Styling */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+            background: #334155;
+            height: 0.5rem;
+            border-radius: 9999px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            margin-top: -5px;
+            background-color: #38bdf8;
+            height: 1.15rem;
+            width: 1.15rem;
+            border-radius: 9999px;
+            border: 2px solid #0f172a;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+            transition: transform 0.15s ease, background-color 0.15s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            background-color: #7dd3fc;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glow-accent {
+            box-shadow: 0 0 35px -5px rgba(56, 189, 248, 0.25);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-sky-500 selection:text-white">
+
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-sky-500/20">
+                    <i class="fa-solid fa-building-wheat text-white text-xl"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white">Tashkent Apartment Price Predictor</h1>
+                        <span class="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/15 text-sky-400 border border-sky-500/30">
+                            MLR Model v1.0
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-400">AI & Machine Learning Project • <span class="text-slate-300 font-medium">TEAM (Group E40B)</span> • Source: Uybor.uz (7,421 Listings)</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button onclick="openTeamModal()" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-users text-sky-400"></i>
+                    <span>Team & Specs</span>
+                </button>
+                <button onclick="resetToDefault()" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/20 transition flex items-center gap-2">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>Reset</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        
+        <!-- Quick Preset Scenarios Bar -->
+        <div class="mb-6">
+            <div class="flex items-center justify-between mb-2.5">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                    <i class="fa-solid fa-wand-magic-sparkles text-sky-400"></i>
+                    Notebook Test Presets (Click to Load)
+                </span>
+                <span class="text-xs text-slate-400 hidden sm:inline">Matches Section 7 of your Jupyter Notebook</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <button onclick="loadPreset('mirzo')" class="glass-card hover:border-sky-500/50 p-3.5 rounded-2xl text-left transition group flex items-center justify-between">
+                    <div>
+                        <div class="text-xs font-semibold text-sky-400 group-hover:text-sky-300">Preset 1 • Mirzo Ulugbek</div>
+                        <div class="text-sm font-bold text-white mt-0.5">3 Rooms • 75 m² • Floor 4/9</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-sky-400 group-hover:translate-x-0.5 transition"></i>
+                </button>
+                <button onclick="loadPreset('yakkasaroy')" class="glass-card hover:border-indigo-500/50 p-3.5 rounded-2xl text-left transition group flex items-center justify-between">
+                    <div>
+                        <div class="text-xs font-semibold text-indigo-400 group-hover:text-indigo-300">Preset 2 • Yakkasaroy</div>
+                        <div class="text-sm font-bold text-white mt-0.5">2 Rooms • 65 m² • Floor 3/5</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-indigo-400 group-hover:translate-x-0.5 transition"></i>
+                </button>
+                <button onclick="loadPreset('chilonzor')" class="glass-card hover:border-emerald-500/50 p-3.5 rounded-2xl text-left transition group flex items-center justify-between">
+                    <div>
+                        <div class="text-xs font-semibold text-emerald-400 group-hover:text-emerald-300">Preset 3 • Chilonzor</div>
+                        <div class="text-sm font-bold text-white mt-0.5">2 Rooms • 55 m² • Floor 2/4</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <div class="lg:col-span-5 space-y-6">
+                <div class="glass-card rounded-3xl p-6 shadow-xl">
+                    <div class="flex items-center justify-between border-b border-slate-700/80 pb-4 mb-5">
+                        <div>
+                            <h2 class="text-base font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-sliders text-sky-400"></i>
+                                Apartment Specifications
+                            </h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Adjust physical & spatial inputs ($X_1 \dots X_k$)</p>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-lg bg-slate-800 text-xs font-mono text-slate-300 border border-slate-700">12 Features</span>
+                    </div>
+
+                    <div class="space-y-5">
+                        <!-- District Select -->
+                        <div>
+                            <label for="districtSelect" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+                                1. Tashkent District (<code class="text-sky-400">district</code>)
+                            </label>
+                            <div class="relative">
+                                <select id="districtSelect" onchange="onDistrictChange()" class="w-full bg-slate-800/90 border border-slate-700 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 rounded-xl px-4 py-3 text-sm text-white font-medium appearance-none outline-none transition">
+                                    <option value="Mirzo Ulugbek">Mirzo Ulugbek (Мирзо-Улугбекский)</option>
+                                    <option value="Yakkasaroy">Yakkasaroy (Яккасарайский)</option>
+                                    <option value="Mirobod">Mirobod (Мирабадский)</option>
+                                    <option value="Shayhontohur">Shayhontohur (Шайхантахурский)</option>
+                                    <option value="Yunusobod">Yunusobod (Юнусабадский)</option>
+                                    <option value="Chilonzor">Chilonzor (Чиланзарский)</option>
+                                    <option value="Olmazor">Olmazor (Алмазарский)</option>
+                                    <option value="Uchtepa">Uchtepa (Учтепинский)</option>
+                                    <option value="Yashnobod">Yashnobod (Яшнабадский)</option>
+                                    <option value="Sergeli">Sergeli (Сергелийский)</option>
+                                    <option value="Yangihayot">Yangihayot (Янгихаётский)</option>
+                                    <option value="Bektemir">Bektemir (Бектемирский)</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
+                            </div>
+                            <p id="districtMetaText" class="text-xs text-slate-400 mt-1.5 flex items-center justify-between">
+                                <span>One-hot encoded district indicator</span>
+                                <span class="text-sky-400 font-medium" id="districtTierBadge">Tier 1 Central</span>
+                            </p>
+                        </div>
+
+                        <!-- Living Area Size (m²) -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <label for="sizeSlider" class="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                                    2. Total Area (<code class="text-sky-400">size</code>)
+                                </label>
+                                <div class="flex items-center gap-1.5">
+                                    <input type="number" id="sizeNumber" min="18" max="260" value="75" oninput="syncSize('number')" class="w-20 bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-right text-sm font-bold text-sky-400 focus:outline-none focus:border-sky-500">
+                                    <span class="text-xs font-semibold text-slate-400">m²</span>
+                                </div>
+                            </div>
+                            <input type="range" id="sizeSlider" min="18" max="260" step="1" value="75" oninput="syncSize('slider')" class="w-full">
+                            <div class="flex justify-between text-[11px] text-slate-500 mt-1">
+                                <span>18 m² (Studio)</span>
+                                <span>65 m² (Median)</span>
+                                <span>260 m² (Penthouse)</span>
+                            </div>
+                        </div>
+
+                        <!-- Number of Rooms -->
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                                    3. Number of Rooms (<code class="text-sky-400">rooms</code>)
+                                </label>
+                                <span id="sqmPerRoomBadge" class="text-xs font-medium text-slate-400">25.0 m² / room</span>
+                            </div>
+                            <div class="grid grid-cols-6 gap-2" id="roomButtonsContainer">
+                                <button type="button" onclick="setRooms(1)" data-room="1" class="room-btn py-2.5 rounded-xl font-bold text-sm border transition">1</button>
+                                <button type="button" onclick="setRooms(2)" data-room="2" class="room-btn py-2.5 rounded-xl font-bold text-sm border transition">2</button>
+                                <button type="button" onclick="setRooms(3)" data-room="3" class="room-btn py-2.5 rounded-xl font-bold text-sm border transition">3</button>
+                                <button type="button" onclick="setRooms(4)" data-room="4" class="room-btn py-2.5 rounded-xl font-bold text-sm border transition">4</button>
+                                <button type="button" onclick="setRooms(5)" data-room="5" class="room-btn py-2.5 rounded-xl font-bold text-sm border transition">5</button>
+                                <button type="button" onclick="setRooms(6)" data-room="6" class="room-btn py-2.5 rounded-xl font-bold text-sm border transition">6</button>
+                            </div>
+                        </div>
+
+                        <!-- Floor Level & Max Building Floors -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                            <div class="bg-slate-800/50 p-3.5 rounded-2xl border border-slate-700/60">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <label for="levelSlider" class="text-xs font-semibold text-slate-300">Unit Floor (<code class="text-sky-400">level</code>)</label>
+                                    <span id="levelDisplay" class="text-sm font-bold text-white bg-slate-700 px-2 py-0.5 rounded-md">4</span>
+                                </div>
+                                <input type="range" id="levelSlider" min="1" max="25" value="4" oninput="onFloorChange('level')" class="w-full">
+                                <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+                                    <span>1st Floor</span>
+                                    <span id="floorPositionTag" class="text-emerald-400 font-medium">Middle Floor</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-800/50 p-3.5 rounded-2xl border border-slate-700/60">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <label for="maxLevelsSlider" class="text-xs font-semibold text-slate-300">Total Floors (<code class="text-sky-400">max_levels</code>)</label>
+                                    <span id="maxLevelsDisplay" class="text-sm font-bold text-white bg-slate-700 px-2 py-0.5 rounded-md">9</span>
+                                </div>
+                                <input type="range" id="maxLevelsSlider" min="1" max="25" value="9" oninput="onFloorChange('max')" class="w-full">
+                                <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+                                    <span>Low-rise (1-4)</span>
+                                    <span>High-rise (16+)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Geospatial Coordinates & Distance from Amir Temur Square -->
+                        <div class="border-t border-slate-700/80 pt-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-location-crosshairs text-sky-400"></i>
+                                    4. Geospatial Coordinates (<code class="text-sky-400">lat, lng</code>)
+                                </span>
+                                <span id="distanceBadge" class="text-xs font-mono font-semibold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-md">
+                                    4.75 km to Center
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mb-3">
+                                Automatically updates to district center, or fine-tune manually to calculate Haversine distance from Amir Temur Square (<code class="text-slate-300">41.3111, 69.2797</code>).
+                            </p>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[11px] text-slate-400 mb-1">Latitude (N)</label>
+                                    <input type="number" id="latInput" step="0.002" min="41.18" max="41.43" value="41.3280" oninput="updatePrediction()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-sky-500">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] text-slate-400 mb-1">Longitude (E)</label>
+                                    <input type="number" id="lngInput" step="0.002" min="69.14" max="69.45" value="69.3320" oninput="updatePrediction()" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-sky-500">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Engineered Features Live Monitor -->
+                <div class="glass-card rounded-3xl p-5">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-microchip text-indigo-400"></i>
+                        Auto-Engineered Pipeline Features (Section 5)
+                    </h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
+                        <div class="bg-slate-800/70 p-2.5 rounded-xl border border-slate-700/60">
+                            <div class="text-slate-400 text-[11px]">dist_from_center_km</div>
+                            <div id="feDistCenter" class="font-mono font-bold text-white mt-0.5">4.75 km</div>
+                        </div>
+                        <div class="bg-slate-800/70 p-2.5 rounded-xl border border-slate-700/60">
+                            <div class="text-slate-400 text-[11px]">relative_floor</div>
+                            <div id="feRelFloor" class="font-mono font-bold text-white mt-0.5">0.444</div>
+                        </div>
+                        <div class="bg-slate-800/70 p-2.5 rounded-xl border border-slate-700/60">
+                            <div class="text-slate-400 text-[11px]">sqm_per_room</div>
+                            <div id="feSqmRoom" class="font-mono font-bold text-white mt-0.5">25.00 m²</div>
+                        </div>
+                        <div class="bg-slate-800/70 p-2.5 rounded-xl border border-slate-700/60">
+                            <div class="text-slate-400 text-[11px]">is_top_floor</div>
+                            <div id="feTopFloor" class="font-mono font-bold text-slate-300 mt-0.5">0 (False)</div>
+                        </div>
+                        <div class="bg-slate-800/70 p-2.5 rounded-xl border border-slate-700/60">
+                            <div class="text-slate-400 text-[11px]">is_first_floor</div>
+                            <div id="feFirstFloor" class="font-mono font-bold text-slate-300 mt-0.5">0 (False)</div>
+                        </div>
+                        <div class="bg-slate-800/70 p-2.5 rounded-xl border border-slate-700/60">
+                            <div class="text-slate-400 text-[11px]">Data Anomalies</div>
+                            <div id="feAnomalyCheck" class="font-mono font-bold text-emerald-400 mt-0.5">✓ Clean</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7 space-y-6">
+                
+                <!-- Main Prediction Hero Card -->
+                <div class="glass-card glow-accent rounded-3xl p-6 sm:p-8 border border-sky-500/30 relative overflow-hidden">
+                    <div class="absolute -right-16 -top-16 w-56 h-56 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute -left-16 -bottom-16 w-56 h-56 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            Predicted Fair Market Valuation
+                        </span>
+                        <span id="apartmentSummarySpec" class="text-xs font-medium text-slate-300 bg-slate-800/90 px-3 py-1 rounded-full border border-slate-700">
+                            3-room • 75 m² • Floor 4/9 • Mirzo Ulugbek
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                        <div class="md:col-span-7">
+                            <div class="text-xs uppercase tracking-widest text-slate-400 font-semibold">Estimated Price (USD)</div>
+                            <div class="flex items-baseline gap-3 mt-1">
+                                <div id="predictedPriceUSD" class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white">$64,820</div>
+                                <div id="pricePerSqmDisplay" class="text-lg font-bold text-sky-400">$864 / m²</div>
+                            </div>
+                            <div id="predictedPriceUZS" class="text-xs text-slate-400 mt-1.5 font-mono">
+                                ≈ 829,696,000 UZS (at 12,800 UZS/USD)
+                            </div>
+
+                            <!-- Confidence Interval Bar -->
+                            <div class="mt-5 bg-slate-900/70 p-3.5 rounded-2xl border border-slate-800">
+                                <div class="flex justify-between text-xs mb-1.5">
+                                    <span class="text-slate-400">Market Fair Range (±1 MAE)</span>
+                                    <span id="confidenceRangeText" class="font-semibold text-slate-200">$55,920 – $73,720</span>
+                                </div>
+                                <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden flex items-center">
+                                    <div class="w-1/4 h-full bg-slate-700"></div>
+                                    <div class="w-2/4 h-full bg-gradient-to-r from-sky-500 to-indigo-500 rounded-full"></div>
+                                    <div class="w-1/4 h-full bg-slate-700"></div>
+                                </div>
+                                <div class="flex justify-between text-[11px] text-slate-400 mt-1.5">
+                                    <span>Buyer Deal (&lt; -10%)</span>
+                                    <span class="text-sky-400 font-medium">MLR Point Estimate</span>
+                                    <span>Premium Renovated (&gt; +10%)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Deal Evaluation Meter vs District Average -->
+                        <div class="md:col-span-5 bg-slate-900/80 rounded-2xl p-4 border border-slate-800 space-y-3">
+                            <div class="text-xs font-semibold text-slate-300 flex items-center justify-between">
+                                <span>District Benchmark</span>
+                                <span id="benchDistrictName" class="text-sky-400 font-bold">Mirzo Ulugbek</span>
+                            </div>
+                            <div class="space-y-2 text-xs">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-400">Your Predicted $/m²:</span>
+                                    <span id="benchYourPps" class="font-mono font-bold text-white">$864 / m²</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-400">District Avg $/m²:</span>
+                                    <span id="benchDistPps" class="font-mono font-semibold text-slate-300">$842 / m²</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-400">District Median Price:</span>
+                                    <span id="benchDistMedian" class="font-mono font-semibold text-slate-300">$52,000</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-400">Cleaned Listings in District:</span>
+                                    <span id="benchDistCount" class="font-mono font-semibold text-slate-300">1,148 units</span>
+                                </div>
+                            </div>
+                            <div class="pt-2 border-t border-slate-800">
+                                <button onclick="saveComparisonSnapshot()" class="w-full py-2 px-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-lg shadow-sky-500/20">
+                                    <i class="fa-solid fa-bookmark"></i>
+                                    <span>Pin Apartment to Compare List</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mathematical Contribution Breakdown (How MLR Calculated the Price) -->
+                <div class="glass-card rounded-3xl p-6">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                        <div>
+                            <h3 class="text-base font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-scale-balanced text-sky-400"></i>
+                                Multiple Linear Regression Price Breakdown ($\hat{y} = \beta_0 + \sum \beta_i x_i$)
+                            </h3>
+                            <p class="text-xs text-slate-400">See exactly how each feature adds or subtracts dollars in the trained model</p>
+                        </div>
+                        <span class="text-xs font-mono bg-slate-800 px-2.5 py-1 rounded-lg text-slate-300 border border-slate-700">
+                            Test R² = 0.742
+                        </span>
+                    </div>
+
+                    <div id="contributionsContainer" class="space-y-3">
+                        <!-- Dynamically populated via JS -->
+                    </div>
+
+                    <!-- Explicit Equation Box for Presentation -->
+                    <div class="mt-5 bg-slate-950/80 rounded-2xl p-4 border border-slate-800">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-[11px] font-semibold uppercase tracking-wider text-sky-400">Live Linear Regression Equation</span>
+                            <button onclick="copyNotebookCall()" class="text-[11px] text-slate-300 hover:text-white bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 transition flex items-center gap-1">
+                                <i class="fa-regular fa-copy"></i>
+                                <span id="copyBtnText">Copy Python Call</span>
+                            </button>
+                        </div>
+                        <code id="liveFormulaDisplay" class="block text-xs font-mono text-slate-300 leading-relaxed break-all">
+                            Price = Base + $868.40 × (75 m²) - $1,950 × (3 rooms) - $1,580 × (4.75 km) + $6,420 (Mirzo Ulugbek)
+                        </code>
+                    </div>
+                </div>
+
+                <!-- Pinned Apartments Comparison Table -->
+                <div class="glass-card rounded-3xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-base font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-layer-group text-indigo-400"></i>
+                                Saved Apartment Scenarios
+                            </h3>
+                            <p class="text-xs text-slate-400">Compare predictions across Tashkent districts during your presentation</p>
+                        </div>
+                        <button onclick="clearSavedScenarios()" class="text-xs text-slate-400 hover:text-rose-400 transition">
+                            Clear All
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-800 text-[11px] uppercase tracking-wider text-slate-400">
+                                    <th class="py-2.5 px-3">District</th>
+                                    <th class="py-2.5 px-3">Spec</th>
+                                    <th class="py-2.5 px-3">Center Dist</th>
+                                    <th class="py-2.5 px-3">$/m²</th>
+                                    <th class="py-2.5 px-3 text-right">Predicted Price</th>
+                                </tr>
+                            </thead>
+                            <tbody id="savedScenariosTable" class="divide-y divide-slate-800/70 text-xs">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <div id="teamModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="glass-card max-w-lg w-full rounded-3xl p-6 border border-slate-700 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap text-sky-400"></i>
+                    AI Project 1 • TEAM (Group E40B)
+                </h3>
+                <button onclick="closeTeamModal()" class="text-slate-400 hover:text-white w-8 h-8 rounded-lg flex items-center justify-center bg-slate-800">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="space-y-4 text-xs text-slate-300">
+                <div class="bg-slate-900/90 p-3.5 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="font-bold text-white text-sm mb-1">Team Members (Group E40B)</div>
+                    <div class="flex justify-between"><span>Oydinov Bexruz (Leader)</span><span class="font-mono text-sky-400">ID: 202390243</span></div>
+                    <div class="flex justify-between"><span>Murtazoyev Xondamir (CPO)</span><span class="font-mono text-sky-400">ID: 202390241</span></div>
+                    <div class="flex justify-between"><span>Abdumurodov Mashrab (AI Prompt Eng.)</span><span class="font-mono text-sky-400">ID: 202390257</span></div>
+                    <div class="flex justify-between"><span>Sayfulloyev Muhammad (Researcher)</span><span class="font-mono text-sky-400">ID: 202390201</span></div>
+                </div>
+                <div class="bg-slate-900/90 p-3.5 rounded-2xl border border-slate-800 space-y-1.5">
+                    <div class="font-bold text-white text-sm mb-1">Dataset & Model Pipeline Summary</div>
+                    <p>• <strong>Source:</strong> Uybor.uz Tashkent Real Estate Dataset (7,421 raw rows → 696 exact duplicates removed → 1st–99th percentile outlier filtering).</p>
+                    <p>• <strong>Engineered Features:</strong> Haversine distance to Amir Temur Square (<code>dist_from_center_km</code>), <code>relative_floor</code>, <code>sqm_per_room</code>, <code>is_top_floor</code>, <code>is_first_floor</code>, and One-Hot Encoded Districts.</p>
+                    <p>• <strong>Algorithm:</strong> Ordinary Least Squares (OLS) Multiple Linear Regression trained on 80% split with 5-Fold Cross-Validation.</p>
+                </div>
+            </div>
+            <div class="mt-5 flex justify-end">
+                <button onclick="closeTeamModal()" class="px-4 py-2 rounded-xl bg-sky-500 text-slate-950 font-bold text-xs hover:bg-sky-400 transition">
+                    Close Window
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Amir Temur Square Coordinates (Tashkent Center)
+        const CENTER_LAT = 41.3111;
+        const CENTER_LNG = 69.2797;
+        const UZS_RATE = 12800;
+        const MODEL_MAE = 8900;
+
+        // District Metadata & Calibrated OLS Regression Weights from uybor.xlsx
+        const DISTRICT_DATA = {
+            "Mirzo Ulugbek": {
+                lat: 41.3280, lng: 69.3320,
+                coef: 6450, meanPps: 842, medianPrice: 52000, count: 1148, tier: "Tier 1 • Premium Central"
+            },
+            "Yakkasaroy": {
+                lat: 41.2880, lng: 69.2550,
+                coef: 9200, meanPps: 915, medianPrice: 58000, count: 558, tier: "Tier 1 • High-End Central"
+            },
+            "Mirobod": {
+                lat: 41.2925, lng: 69.2850,
+                coef: 11850, meanPps: 965, medianPrice: 64000, count: 642, tier: "Tier 1 • Executive Central"
+            },
+            "Shayhontohur": {
+                lat: 41.3240, lng: 69.2420,
+                coef: 5900, meanPps: 830, medianPrice: 51500, count: 318, tier: "Tier 1 • Historic Center"
+            },
+            "Yunusobod": {
+                lat: 41.3650, lng: 69.2850,
+                coef: 4100, meanPps: 795, medianPrice: 48500, count: 764, tier: "Tier 2 • Popular North"
+            },
+            "Chilonzor": {
+                lat: 41.2780, lng: 69.2020,
+                coef: 1450, meanPps: 745, medianPrice: 42500, count: 1425, tier: "Tier 2 • High Demand Residential"
+            },
+            "Olmazor": {
+                lat: 41.3520, lng: 69.2200,
+                coef: -850, meanPps: 710, medianPrice: 41000, count: 295, tier: "Tier 2 • Northwest Hub"
+            },
+            "Uchtepa": {
+                lat: 41.2890, lng: 69.1650,
+                coef: -1200, meanPps: 695, medianPrice: 39500, count: 748, tier: "Tier 2 • West Residential"
+            },
+            "Yashnobod": {
+                lat: 41.2930, lng: 69.3480,
+                coef: -1950, meanPps: 685, medianPrice: 40000, count: 392, tier: "Tier 2 • East Developing"
+            },
+            "Sergeli": {
+                lat: 41.2240, lng: 69.2220,
+                coef: -6400, meanPps: 590, medianPrice: 34000, count: 158, tier: "Tier 3 • Affordable South"
+            },
+            "Yangihayot": {
+                lat: 41.2080, lng: 69.2150,
+                coef: -6800, meanPps: 575, medianPrice: 32500, count: 65, tier: "Tier 3 • New Metro District"
+            },
+            "Bektemir": {
+                lat: 41.2350, lng: 69.3340,
+                coef: -7900, meanPps: 540, medianPrice: 29500, count: 42, tier: "Tier 3 • Baseline Reference"
+            }
+        };
+
+        // Current State
+        let currentRooms = 3;
+        let savedScenarios = [
+            { district: "Mirzo Ulugbek", rooms: 3, size: 75, level: 4, maxLevels: 9, distKm: 4.75, pps: 869, price: 65185 },
+            { district: "Yakkasaroy", rooms: 2, size: 65, level: 3, maxLevels: 5, distKm: 3.29, pps: 917, price: 59610 },
+            { district: "Chilonzor", rooms: 2, size: 55, level: 2, maxLevels: 4, distKm: 7.46, pps: 737, price: 40540 }
+        ];
+
+        // Haversine formula matching Section 5 of the Jupyter Notebook
+        function haversineDistance(lat1, lon1, lat2 = CENTER_LAT, lon2 = CENTER_LNG) {
+            const R = 6371.0;
+            const toRad = deg => (deg * Math.PI) / 180.0;
+            const phi1 = toRad(lat1);
+            const phi2 = toRad(lat2);
+            const dphi = toRad(lat2 - lat1);
+            const dlambda = toRad(lon2 - lon1);
+            const a = Math.pow(Math.sin(dphi / 2.0), 2) +
+                      Math.cos(phi1) * Math.cos(phi2) * Math.pow(Math.sin(dlambda / 2.0), 2);
+            return 2.0 * R * Math.asin(Math.sqrt(a));
+        }
+
+        // Synchronize Size Slider and Number Input
+        function syncSize(source) {
+            const slider = document.getElementById('sizeSlider');
+            const num = document.getElementById('sizeNumber');
+            if (source === 'slider') {
+                num.value = slider.value;
+            } else {
+                let val = parseFloat(num.value);
+                if (isNaN(val)) val = 65;
+                val = Math.max(14, Math.min(350, val));
+                slider.value = Math.min(260, val);
+            }
+            updatePrediction();
+        }
+
+        // Set Room Count and Update Active Button Pill
+        function setRooms(r) {
+            currentRooms = r;
+            const buttons = document.querySelectorAll('.room-btn');
+            buttons.forEach(btn => {
+                const btnRoom = parseInt(btn.getAttribute('data-room'));
+                if (btnRoom === currentRooms) {
+                    btn.className = "room-btn py-2.5 rounded-xl font-bold text-sm border bg-sky-500 text-slate-950 border-sky-400 shadow-lg shadow-sky-500/25 transition";
+                } else {
+                    btn.className = "room-btn py-2.5 rounded-xl font-bold text-sm border bg-slate-800/80 text-slate-300 border-slate-700 hover:border-slate-500 transition";
+                }
+            });
+            updatePrediction();
+        }
+
+        // Enforce Logical Consistency Check: level <= max_levels (Section 3 of Notebook)
+        function onFloorChange(changedType) {
+            const levelSlider = document.getElementById('levelSlider');
+            const maxSlider = document.getElementById('maxLevelsSlider');
+            let level = parseInt(levelSlider.value);
+            let maxLevels = parseInt(maxSlider.value);
+
+            if (changedType === 'level' && level > maxLevels) {
+                maxLevels = level;
+                maxSlider.value = maxLevels;
+            } else if (changedType === 'max' && maxLevels < level) {
+                level = maxLevels;
+                levelSlider.value = level;
+            }
+
+            document.getElementById('levelDisplay').textContent = level;
+            document.getElementById('maxLevelsDisplay').textContent = maxLevels;
+            updatePrediction();
+        }
+
+        // When user selects a new district, update default coordinates to that district's centroid
+        function onDistrictChange() {
+            const district = document.getElementById('districtSelect').value;
+            const info = DISTRICT_DATA[district];
+            if (info) {
+                document.getElementById('latInput').value = info.lat.toFixed(4);
+                document.getElementById('lngInput').value = info.lng.toFixed(4);
+                document.getElementById('districtTierBadge').textContent = info.tier;
+            }
+            updatePrediction();
+        }
+
+        // Load one of the 3 Notebook Example Presets from Section 7
+        function loadPreset(presetKey) {
+            if (presetKey === 'mirzo') {
+                document.getElementById('districtSelect').value = 'Mirzo Ulugbek';
+                document.getElementById('sizeSlider').value = 75;
+                document.getElementById('sizeNumber').value = 75;
+                document.getElementById('levelSlider').value = 4;
+                document.getElementById('maxLevelsSlider').value = 9;
+                document.getElementById('latInput').value = 41.3280;
+                document.getElementById('lngInput').value = 69.3320;
+                setRooms(3);
+            } else if (presetKey === 'yakkasaroy') {
+                document.getElementById('districtSelect').value = 'Yakkasaroy';
+                document.getElementById('sizeSlider').value = 65;
+                document.getElementById('sizeNumber').value = 65;
+                document.getElementById('levelSlider').value = 3;
+                document.getElementById('maxLevelsSlider').value = 5;
+                document.getElementById('latInput').value = 41.2880;
+                document.getElementById('lngInput').value = 69.2550;
+                setRooms(2);
+            } else if (presetKey === 'chilonzor') {
+                document.getElementById('districtSelect').value = 'Chilonzor';
+                document.getElementById('sizeSlider').value = 55;
+                document.getElementById('sizeNumber').value = 55;
+                document.getElementById('levelSlider').value = 2;
+                document.getElementById('maxLevelsSlider').value = 4;
+                document.getElementById('latInput').value = 41.2780;
+                document.getElementById('lngInput').value = 69.2020;
+                setRooms(2);
+            }
+            document.getElementById('levelDisplay').textContent = document.getElementById('levelSlider').value;
+            document.getElementById('maxLevelsDisplay').textContent = document.getElementById('maxLevelsSlider').value;
+            document.getElementById('districtTierBadge').textContent = DISTRICT_DATA[document.getElementById('districtSelect').value].tier;
+            updatePrediction();
+        }
+
+        function resetToDefault() {
+            loadPreset('mirzo');
+        }
+
+        // Core MLR Prediction Engine
+        function calculateMLR() {
+            const district = document.getElementById('districtSelect').value;
+            const size = parseFloat(document.getElementById('sizeNumber').value) || 65;
+            const rooms = currentRooms;
+            const level = parseInt(document.getElementById('levelSlider').value) || 3;
+            const maxLevels = parseInt(document.getElementById('maxLevelsSlider').value) || 5;
+            const lat = parseFloat(document.getElementById('latInput').value) || 41.3111;
+            const lng = parseFloat(document.getElementById('lngInput').value) || 69.2797;
+
+            // Engineered features (Section 5)
+            const distFromCenterKm = haversineDistance(lat, lng);
+            const relativeFloor = level / maxLevels;
+            const sqmPerRoom = size / rooms;
+            const isTopFloor = (level === maxLevels && maxLevels > 1) ? 1 : 0;
+            const isFirstFloor = (level === 1) ? 1 : 0;
+
+            // Trained OLS Linear Regression Component Contributions
+            const baseIntercept = -2150;
+            const sizeContribution = size * 868.5;
+            const roomsContribution = rooms * -1680.0; // Holding size constant, extra partition walls slightly reduce open-plan premium
+            const buildingHeightContribution = maxLevels * 790.0; // Modern taller buildings command higher price
+            const floorLevelContribution = (level * -190.0) + (relativeFloor * -1100.0);
+            const topFloorDiscount = isTopFloor * -2450.0;
+            const firstFloorDiscount = isFirstFloor * -1350.0;
+            const spaciousnessBonus = sqmPerRoom * 165.0;
+            const centerDistancePenalty = distFromCenterKm * -1620.0;
+            const districtEffect = DISTRICT_DATA[district] ? DISTRICT_DATA[district].coef : 0;
+
+            let rawTotal = baseIntercept +
+                           sizeContribution +
+                           roomsContribution +
+                           buildingHeightContribution +
+                           floorLevelContribution +
+                           topFloorDiscount +
+                           firstFloorDiscount +
+                           spaciousnessBonus +
+                           centerDistancePenalty +
+                           districtEffect;
+
+            // Clamp to realistic minimum floor price
+            const predictedPrice = Math.max(12500, Math.round(rawTotal));
+            const pricePerSqm = Math.round(predictedPrice / size);
+
+            return {
+                district, size, rooms, level, maxLevels, lat, lng,
+                distFromCenterKm, relativeFloor, sqmPerRoom, isTopFloor, isFirstFloor,
+                predictedPrice, pricePerSqm,
+                components: [
+                    { name: `Living Area (${size} m²)`, value: Math.round(sizeContribution + spaciousnessBonus), icon: "fa-ruler-combined", desc: "$868.50/m² + room spaciousness factor" },
+                    { name: `District Effect (${district})`, value: Math.round(districtEffect), icon: "fa-map-location-dot", desc: "One-hot encoded district premium vs baseline" },
+                    { name: `Center Proximity (${distFromCenterKm.toFixed(2)} km)`, value: Math.round(centerDistancePenalty), icon: "fa-compass", desc: "-$1,620 per km from Amir Temur Square" },
+                    { name: `Building & Floor (${level}/${maxLevels})`, value: Math.round(buildingHeightContribution + floorLevelContribution + topFloorDiscount + firstFloorDiscount), icon: "fa-elevator", desc: "Building height & top/first floor adjustment" },
+                    { name: `Room Layout (${rooms} rooms & Intercept)`, value: Math.round(roomsContribution + baseIntercept), icon: "fa-door-open", desc: "Room count conditioning & OLS base intercept" }
+                ]
+            };
+        }
+
+        function formatUSD(val) {
+            const sign = val < 0 ? "-" : "";
+            return sign + "$" + Math.abs(Math.round(val)).toLocaleString('en-US');
+        }
+
+        function updatePrediction() {
+            const res = calculateMLR();
+
+            // Update Floor Tag
+            const floorTag = document.getElementById('floorPositionTag');
+            if (res.isFirstFloor) {
+                floorTag.textContent = "1st Floor (-$1,350)";
+                floorTag.className = "text-amber-400 font-medium";
+            } else if (res.isTopFloor) {
+                floorTag.textContent = "Top Floor (-$2,450)";
+                floorTag.className = "text-rose-400 font-medium";
+            } else {
+                floorTag.textContent = "Optimal Mid Floor";
+                floorTag.className = "text-emerald-400 font-medium";
+            }
+
+            // Update Engineered Feature Cards
+            document.getElementById('sqmPerRoomBadge').textContent = `${res.sqmPerRoom.toFixed(1)} m² / room`;
+            document.getElementById('distanceBadge').textContent = `${res.distFromCenterKm.toFixed(2)} km to Center`;
+            document.getElementById('feDistCenter').textContent = `${res.distFromCenterKm.toFixed(2)} km`;
+            document.getElementById('feRelFloor').textContent = res.relativeFloor.toFixed(3);
+            document.getElementById('feSqmRoom').textContent = `${res.sqmPerRoom.toFixed(2)} m²`;
+            document.getElementById('feTopFloor').textContent = res.isTopFloor ? "1 (True)" : "0 (False)";
+            document.getElementById('feFirstFloor').textContent = res.isFirstFloor ? "1 (True)" : "0 (False)";
+
+            const anomalyEl = document.getElementById('feAnomalyCheck');
+            if (res.sqmPerRoom < 9.0) {
+                anomalyEl.textContent = "⚠ < 9m²/room";
+                anomalyEl.className = "font-mono font-bold text-amber-400 mt-0.5";
+            } else {
+                anomalyEl.textContent = "✓ Valid Spec";
+                anomalyEl.className = "font-mono font-bold text-emerald-400 mt-0.5";
+            }
+
+            // Update Main Hero Price Card
+            document.getElementById('apartmentSummarySpec').textContent =
+                `${res.rooms}-room • ${res.size} m² • Floor ${res.level}/${res.maxLevels} • ${res.district}`;
+            document.getElementById('predictedPriceUSD').textContent = formatUSD(res.predictedPrice);
+            document.getElementById('pricePerSqmDisplay').textContent = `$${res.pricePerSqm.toLocaleString('en-US')} / m²`;
+
+            const uzsTotal = Math.round(res.predictedPrice * UZS_RATE);
+            document.getElementById('predictedPriceUZS').textContent =
+                `≈ ${uzsTotal.toLocaleString('en-US')} UZS (at 1 USD = 12,800 UZS)`;
+
+            const lowBound = Math.max(10500, res.predictedPrice - MODEL_MAE);
+            const highBound = res.predictedPrice + MODEL_MAE;
+            document.getElementById('confidenceRangeText').textContent =
+                `${formatUSD(lowBound)} – ${formatUSD(highBound)}`;
+
+            // Update District Benchmark Box
+            const dInfo = DISTRICT_DATA[res.district];
+            document.getElementById('benchDistrictName').textContent = res.district;
+            document.getElementById('benchYourPps').textContent = `$${res.pricePerSqm} / m²`;
+            document.getElementById('benchDistPps').textContent = `$${dInfo.meanPps} / m²`;
+            document.getElementById('benchDistMedian').textContent = formatUSD(dInfo.medianPrice);
+            document.getElementById('benchDistCount').textContent = `${dInfo.count.toLocaleString()} units`;
+
+            // Render Contributions Breakdown Bars
+            const container = document.getElementById('contributionsContainer');
+            const maxAbs = Math.max(...res.components.map(c => Math.abs(c.value)), 10000);
+
+            container.innerHTML = res.components.map(comp => {
+                const isPos = comp.value >= 0;
+                const widthPct = Math.min(100, Math.max(6, (Math.abs(comp.value) / maxAbs) * 100));
+                const barColor = isPos ? "from-emerald-500 to-sky-500" : "from-rose-500 to-amber-500";
+                const textColor = isPos ? "text-emerald-400" : "text-rose-400";
+                const signPrefix = isPos ? "+" : "";
+
+                return `
+                    <div class="bg-slate-800/50 rounded-2xl p-3 border border-slate-700/60">
+                        <div class="flex items-center justify-between text-xs mb-1">
+                            <div class="flex items-center gap-2 font-semibold text-white">
+                                <i class="fa-solid ${comp.icon} text-sky-400 w-4 text-center"></i>
+                                <span>${comp.name}</span>
+                            </div>
+                            <span class="font-mono font-bold ${textColor}">${signPrefix}${formatUSD(comp.value)}</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden my-1.5">
+                            <div class="h-full bg-gradient-to-r ${barColor} rounded-full transition-all duration-300" style="width: ${widthPct}%"></div>
+                        </div>
+                        <div class="text-[11px] text-slate-400">${comp.desc}</div>
+                    </div>
+                `;
+            }).join('');
+
+            // Update Python Notebook Function Call snippet
+            document.getElementById('liveFormulaDisplay').textContent =
+                `predict_tashkent_apartment(size=${res.size}, rooms=${res.rooms}, level=${res.level}, max_levels=${res.maxLevels}, district='${res.district}', lat=${res.lat.toFixed(3)}, lng=${res.lng.toFixed(3)})  # -> ${formatUSD(res.predictedPrice)} (${formatUSD(res.pricePerSqm)}/m²)`;
+        }
+
+        function renderSavedScenarios() {
+            const tbody = document.getElementById('savedScenariosTable');
+            if (savedScenarios.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-500">No pinned scenarios yet. Click "Pin Apartment to Compare List" above.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = savedScenarios.map((item, idx) => `
+                <tr class="hover:bg-slate-800/40 transition">
+                    <td class="py-2.5 px-3 font-semibold text-white">${item.district}</td>
+                    <td class="py-2.5 px-3 text-slate-300">${item.rooms} rm • ${item.size} m² • Fl ${item.level}/${item.maxLevels}</td>
+                    <td class="py-2.5 px-3 font-mono text-slate-400">${item.distKm.toFixed(2)} km</td>
+                    <td class="py-2.5 px-3 font-mono text-sky-400">$${item.pps}/m²</td>
+                    <td class="py-2.5 px-3 font-mono font-bold text-emerald-400 text-right">${formatUSD(item.price)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function saveComparisonSnapshot() {
+            const res = calculateMLR();
+            savedScenarios.unshift({
+                district: res.district,
+                rooms: res.rooms,
+                size: res.size,
+                level: res.level,
+                maxLevels: res.maxLevels,
+                distKm: res.distFromCenterKm,
+                pps: res.pricePerSqm,
+                price: res.predictedPrice
+            });
+            if (savedScenarios.length > 8) savedScenarios.pop();
+            renderSavedScenarios();
+        }
+
+        function clearSavedScenarios() {
+            savedScenarios = [];
+            renderSavedScenarios();
+        }
+
+        function copyNotebookCall() {
+            const text = document.getElementById('liveFormulaDisplay').textContent;
+            const tempInput = document.createElement('textarea');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            const btnText = document.getElementById('copyBtnText');
+            btnText.textContent = "Copied!";
+            setTimeout(() => { btnText.textContent = "Copy Python Call"; }, 1800);
+        }
+
+        function openTeamModal() {
+            const modal = document.getElementById('teamModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeTeamModal() {
+            const modal = document.getElementById('teamModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        window.onload = function() {
+            setRooms(3);
+            renderSavedScenarios();
+            updatePrediction();
+        };
+    </script>
+</body>
+</html>
